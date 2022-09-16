@@ -18,7 +18,7 @@ def parse_model_yaml(path_):
     return model
 
 
-def map_cardinality(card):
+def cardinality_to_arrow_shape(card):
     map = {
         "0..1": "noneteeodot",
         "1": "nonetee",
@@ -26,7 +26,7 @@ def map_cardinality(card):
         "1..N": "crowtee",
         "N": "crow",
     }
-    arrowname = map[str(card)]
+    arrowname = map[card]
     return arrowname
 
 
@@ -36,15 +36,13 @@ def parse_relations(rel={}):
     child_tuple = rel["child"].split(".")
     rel["child"] = dict(table=child_tuple[0], keycol=child_tuple[1])
 
-    rel["parent"]["ie_symbol"] = map_cardinality(str(rel["parent_cardinality"]).upper())
-    rel["child"]["ie_symbol"] = map_cardinality(str(rel["child_cardinality"]).upper())
+    rel["parent"]["ie_symbol"] = cardinality_to_arrow_shape(
+        str(rel["parent_cardinality"]).upper()
+    )
+    rel["child"]["ie_symbol"] = cardinality_to_arrow_shape(
+        str(rel["child_cardinality"]).upper()
+    )
     return rel
-
-
-def draw_diagram(dot=""):
-    G = pgv.AGraph(dot)
-    cwd_ = str(Path.cwd())
-    G.draw(f"{cwd_}/ermahgerd_output.svg", prog="dot")
 
 
 def render_template(yaml_file=YAMLEXAMPLE):
@@ -60,6 +58,12 @@ def render_template(yaml_file=YAMLEXAMPLE):
         rel = parse_relations(rel)
     rendered = template.render(**model)
     return rendered
+
+
+def draw_diagram(dot=""):
+    G = pgv.AGraph(dot)
+    cwd_ = str(Path.cwd())
+    G.draw(f"{cwd_}/ermahgerd_output.svg", prog="dot")
 
 
 def handle_args():
