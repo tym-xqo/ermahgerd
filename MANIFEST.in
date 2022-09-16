@@ -1,0 +1,2 @@
+include example.erd.yml
+include ermahgerd/template.dot.j2

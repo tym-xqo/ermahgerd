@@ -1,0 +1,66 @@
+ {% block graph %}
+digraph G {
+    graph [
+        nodesep=1.5;
+        ranksep=1.5;
+        rankdir="LR";
+        concentrate=true;
+        splines="ortho";
+        pad="0.33,0.33";
+        label="{{ label }}";
+        labelloc="t";
+        fontname="Helvetica";
+        rankdir=LR;
+    ];
+    
+    node [
+        shape=Mrecord, 
+        style=filled, 
+        fillcolor="#fdf6e3", 
+        penwidth=0.72, 
+        fontname="Helvetica", 
+        fontcolor="#586e75",
+        fontsize=12
+    ];
+    
+    edge [
+        dir=both,
+        fontsize=12,
+        arrowsize=0.9,
+        penwidth=1.0,
+        labelangle=32,
+        labeldistance=1.8,
+        fontname="Helvetica"
+    ];
+ {% endblock -%}
+
+ {% block tables %}
+ {% for table in tables %}
+    "{{ table["name"] }}" [ label=<
+         <table border="0" cellborder="0" cellspacing="0" ><tr><td><b>{{ table["name"] }}</b></td></tr>
+         {% for column in table["columns"] %}<tr><td port="{{ column['name'] }}" align="left" cellpadding="3">
+         {%- if column['key'] == "primary" -%}<b><font color="#268bd2">PK </font></b> {%- endif -%}
+         {%- if column['key'] == "foreign" -%}<font color="#b58900">FK </font> {%- endif -%}
+         {{ column["name"] }} <font color="#93a1a1">{{ column["type"] }}</font></td></tr>
+         {% endfor -%}
+         </table>>
+    ];
+ {% endfor %}
+ {% endblock %}
+ {% block relations %}
+  {% for rel in relations %}
+    "{{ rel["parent"]["table"] }}":"{{ rel["parent"]["keycol"] }}"->"{{ rel["child"]["table"] }}":"{{ rel["child"]["keycol"] }}" [
+        arrowhead={{ rel["parent"]["ie_symbol"] }},
+        arrowtail={{ rel["child"]["ie_symbol"] }},
+    ];
+ {% endfor %}
+ {% endblock %}
+}
+
+{#
+{ rank=min; dim_tenant dim_course }
+{ rank=same; dim_student ref_instructor }
+{ rank=max; xref_instructor_student }
+
+}
+#}
