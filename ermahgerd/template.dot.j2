@@ -50,8 +50,8 @@ digraph G {
  {% block relations %}
   {% for rel in relations %}
     "{{ rel["parent"]["table"] }}":"{{ rel["parent"]["keycol"] }}"->"{{ rel["child"]["table"] }}":"{{ rel["child"]["keycol"] }}" [
-        arrowhead={{ rel["parent"]["ie_symbol"] }},
-        arrowtail={{ rel["child"]["ie_symbol"] }},
+        arrowhead={{ rel["child"]["ie_symbol"] }},
+        arrowtail={{ rel["parent"]["ie_symbol"] }},
     ];
  {% endfor %}
  {% endblock %}
