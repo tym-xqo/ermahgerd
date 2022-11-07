@@ -36,10 +36,10 @@ def parse_relations(rel={}):
     child_tuple = rel["child"].split(".")
     rel["child"] = dict(table=child_tuple[0], keycol=child_tuple[1])
 
-    rel["parent"]["ie_symbol"] = cardinality_to_arrow_shape(
+    rel["child"]["ie_symbol"] = cardinality_to_arrow_shape(
         str(rel["parent_cardinality"]).upper()
     )
-    rel["child"]["ie_symbol"] = cardinality_to_arrow_shape(
+    rel["parent"]["ie_symbol"] = cardinality_to_arrow_shape(
         str(rel["child_cardinality"]).upper()
     )
     return rel
